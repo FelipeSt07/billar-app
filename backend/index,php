@@ -1,0 +1,7 @@
+<?php
+require_once "utils/response.php";
+
+jsonResponse([
+    "success" => true,
+    "message" => "API de Billar funcionando correctamente"
+]);
