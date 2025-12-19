@@ -1,37 +1,54 @@
 <?php
-require_once "../middlewares/auth.php";
-require_once "../config/database.php";
-require_once "../utils/response.php";
+require "../config/database.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
+$id_mesa = $data['id_mesa'] ?? null;
 
-if (!isset($data['id_mesa'])) {
-    jsonResponse(["success" => false, "message" => "Mesa no especificada"], 400);
+if (!$id_mesa) {
+    echo json_encode([
+        "success" => false,
+        "message" => "ID de mesa requerido"
+    ]);
+    exit;
 }
 
-// Verificar mesa
-$stmt = $pdo->prepare("SELECT estado FROM mesas WHERE id_mesa = ?");
-$stmt->execute([$data['id_mesa']]);
-$mesa = $stmt->fetch();
+/* 1️⃣ Verificar si ya existe una sesión activa para esta mesa */
+$stmt = $pdo->prepare("
+    SELECT id_sesion 
+    FROM sesiones_mesa 
+    WHERE id_mesa = ? AND estado = 'activa'
+    LIMIT 1
+");
+$stmt->execute([$id_mesa]);
+$sesion = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$mesa || $mesa['estado'] !== 'libre') {
-    jsonResponse(["success" => false, "message" => "Mesa no disponible"], 400);
+if ($sesion) {
+    // ⚠️ Ya hay sesión activa → NO crear otra
+    echo json_encode([
+        "success" => true,
+        "message" => "Mesa ya tiene sesión activa",
+        "id_sesion" => $sesion['id_sesion']
+    ]);
+    exit;
 }
 
-// Crear sesión
-$pdo->prepare("
-    INSERT INTO sesiones_mesa (id_mesa, hora_inicio)
-    VALUES (?, NOW())
-")->execute([$data['id_mesa']]);
+/* 2️⃣ Crear nueva sesión */
+$stmt = $pdo->prepare("
+    INSERT INTO sesiones_mesa (id_mesa, hora_inicio, estado)
+    VALUES (?, NOW(), 'activa')
+");
+$stmt->execute([$id_mesa]);
 
-// Actualizar mesa
-$pdo->prepare("
-    UPDATE mesas SET estado = 'ocupada'
-    WHERE id_mesa = ?
-")->execute([$data['id_mesa']]);
+$id_sesion = $pdo->lastInsertId();
 
-jsonResponse([
+/* 3️⃣ Marcar mesa como ocupada */
+$stmt = $pdo->prepare("
+    UPDATE mesas SET estado = 'ocupada' WHERE id_mesa = ?
+");
+$stmt->execute([$id_mesa]);
+
+echo json_encode([
     "success" => true,
     "message" => "Mesa iniciada correctamente",
-    "id_sesion" => $idSesion
+    "id_sesion" => $id_sesion
 ]);

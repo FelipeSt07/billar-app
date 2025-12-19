@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Billar App | Ventas y Mesas</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    .ventas-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .content {
+      flex: 1;
+      padding: 30px;
+      background: #f4f4f4;
+    }
+
+    h1 { margin-bottom: 25px; }
+
+    .mesas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .mesa {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      text-align: center;
+      border-top: 6px solid #000;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .mesa.ocupada { border-top-color: #BF2000; }
+    .mesa.pausada { border-top-color: orange; }
+
+    .mesa.seleccionada {
+      outline: 3px solid #BF2000;
+    }
+
+    .venta-panel {
+      background: #fff;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      max-width: 600px;
+    }
+
+    .venta-panel h2 { color: #BF2000; }
+
+    .info-mesa p {
+      margin: 6px 0;
+      font-size: 15px;
+    }
+
+    .venta-panel input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .venta-panel button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: #BF2000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .acciones button { background: #000; }
+
+    .total {
+      margin-top: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="ventas-container">
+  <div class="content">
+
+    <h1>💰 Ventas y Mesas</h1>
+
+    <div class="mesas" id="mesas"></div>
+
+    <div class="venta-panel">
+      <h2>Mesa: <span id="mesaActual">Ninguna</span></h2>
+
+      <div class="info-mesa">
+        <p><strong>Estado:</strong> <span id="estadoMesa">---</span></p>
+        <p><strong>Tiempo:</strong> <span id="tiempoMesa">00 min</span></p>
+        <p><strong>Costo tiempo:</strong> $<span id="costoTiempo">0</span></p>
+      </div>
+
+      <hr>
+
+      <input type="number" id="id_producto" placeholder="ID Producto">
+      <input type="number" id="cantidad" placeholder="Cantidad">
+      <button onclick="agregarProducto()">Agregar producto</button>
+
+      <div class="total" id="totalVenta">Total: $0</div>
+
+      <div class="acciones">
+        <button onclick="pausarMesa()">⏸ Pausar</button>
+        <button onclick="reanudarMesa()">🔄 Reanudar</button>
+        <button onclick="finalizarMesa()">⏹ Finalizar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let mesaSeleccionada = null;
+let idSesion = null;
+let totalProductos = 0;
+let costoTiempo = 0;
+let reloj = null;
+
+/* ===== CARGAR MESAS ===== */
+function cargarMesas() {
+  fetch("/billar-app/backend/mesas/estado.php")
+    .then(r => r.json())
+    .then(res => {
+      const cont = document.getElementById("mesas");
+      cont.innerHTML = "";
+
+      res.data.forEach(m => {
+        const div = document.createElement("div");
+        div.className = `mesa ${m.estado}`;
+        if (m.id_mesa === mesaSeleccionada) div.classList.add("seleccionada");
+
+        div.innerHTML = `<h3>${m.nombre_mesa}</h3><p>${m.estado}</p>`;
+        div.onclick = () => seleccionarMesa(m);
+        cont.appendChild(div);
+      });
+    });
+}
+
+/* ===== SELECCIONAR MESA ===== */
+function seleccionarMesa(mesa) {
+  mesaSeleccionada = mesa.id_mesa;
+  document.getElementById("mesaActual").textContent = mesa.nombre_mesa;
+  document.getElementById("estadoMesa").textContent = mesa.estado;
+
+  fetch("/billar-app/backend/mesas/iniciar.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ id_mesa: mesa.id_mesa })
+  })
+  .then(r => r.json())
+  .then(res => {
+    idSesion = res.id_sesion;
+    iniciarReloj();
+    cargarMesas();
+  });
+}
+
+/* ===== RELOJ TIEMPO ===== */
+function iniciarReloj() {
+  if (reloj) clearInterval(reloj);
+
+  reloj = setInterval(() => {
+    fetch(`/billar-app/backend/sesiones/estado.php?id_mesa=${mesaSeleccionada}`)
+      .then(r => r.json())
+      .then(res => {
+        if (!res.data) return;
+
+        const minutos = res.data.minutos;
+        document.getElementById("tiempoMesa").textContent = `${minutos} min`;
+
+        costoTiempo = minutos * 2000;
+        document.getElementById("costoTiempo").textContent = costoTiempo;
+
+        actualizarTotal();
+      });
+  }, 10000);
+}
+
+/* ===== PRODUCTOS ===== */
+function agregarProducto() {
+  if (!idSesion) return alert("Seleccione una mesa");
+
+  fetch("/billar-app/backend/ventas/agregar_producto.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      id_sesion: idSesion,
+      id_producto: id_producto.value,
+      cantidad: cantidad.value
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      totalProductos += res.subtotal;
+      actualizarTotal();
+    }
+  });
+}
+
+/* ===== TOTAL ===== */
+function actualizarTotal() {
+  document.getElementById("totalVenta").textContent =
+    `Total: $${totalProductos + costoTiempo}`;
+}
+
+/* ===== PAUSAR ===== */
+function pausarMesa() {
+  fetch("/billar-app/backend/mesas/pausar.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ id_mesa: mesaSeleccionada })
+  }).then(cargarMesas);
+}
+
+/* ===== REANUDAR ===== */
+function reanudarMesa() {
+  fetch("/billar-app/backend/mesas/reanudar.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ id_mesa: mesaSeleccionada })
+  }).then(cargarMesas);
+}
+
+/* ===== FINALIZAR ===== */
+function finalizarMesa() {
+  clearInterval(reloj);
+
+  fetch("/billar-app/backend/mesas/finalizar.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ id_mesa: mesaSeleccionada })
+  })
+  .then(() => {
+    mesaSeleccionada = null;
+    idSesion = null;
+    totalProductos = 0;
+    costoTiempo = 0;
+
+    document.getElementById("mesaActual").textContent = "Ninguna";
+    document.getElementById("estadoMesa").textContent = "---";
+    document.getElementById("tiempoMesa").textContent = "00 min";
+    document.getElementById("costoTiempo").textContent = "0";
+    document.getElementById("totalVenta").textContent = "Total: $0";
+
+    cargarMesas();
+  });
+}
+
+cargarMesas();
+</script>
+
+</body>
+</html>

@@ -1,19 +1,26 @@
 <?php
-require_once "../middlewares/auth.php";
-require_once "../config/database.php";
-require_once "../utils/response.php";
+require "../config/database.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
+$id_mesa = $data['id_mesa'] ?? null;
 
-$pdo->prepare("
-    UPDATE mesas SET estado = 'pausada'
-    WHERE id_mesa = ?
-")->execute([$data['id_mesa']]);
+if (!$id_mesa) {
+    echo json_encode(["success" => false, "message" => "ID mesa requerido"]);
+    exit;
+}
 
-$pdo->prepare("
-    UPDATE sesiones_mesa
-    SET estado = 'pausada'
+/* Pausar sesión activa */
+$stmt = $pdo->prepare("
+    UPDATE sesiones_mesa 
+    SET estado = 'pausada' 
     WHERE id_mesa = ? AND estado = 'activa'
-")->execute([$data['id_mesa']]);
+");
+$stmt->execute([$id_mesa]);
 
-jsonResponse(["success" => true, "message" => "Mesa pausada"]);
+/* Cambiar estado mesa */
+$stmt = $pdo->prepare("
+    UPDATE mesas SET estado = 'pausada' WHERE id_mesa = ?
+");
+$stmt->execute([$id_mesa]);
+
+echo json_encode(["success" => true, "message" => "Mesa pausada"]);

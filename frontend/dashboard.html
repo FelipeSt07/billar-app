@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Billar Velez | Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* ======================
+       LAYOUT GENERAL
+    ====================== */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ======================
+       SIDEBAR
+    ====================== */
+    .sidebar {
+      width: 260px;
+      background: #BF2000;
+      color: #fff;
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 35px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .sidebar hr {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.4);
+      margin: 15px 0 25px;
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      background: rgba(0,0,0,0.15);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .menu-btn span {
+      font-size: 20px;
+    }
+
+    .menu-btn:hover {
+      background: #000;
+      transform: translateX(6px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    /* ======================
+       CONTENIDO
+    ====================== */
+    .content {
+      flex: 1;
+      padding: 30px;
+      background: #f4f4f4;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 35px;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      color: #000;
+    }
+
+    .logout {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .logout:hover {
+      background: #BF2000;
+    }
+
+    /* ======================
+       TARJETAS KPI
+    ====================== */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      border-top: 6px solid #BF2000;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+    }
+
+    .card h3 {
+      color: #BF2000;
+      margin-bottom: 12px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card p {
+      font-size: 26px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .card small {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>🎱 Billar Velez</h2>
+    <hr>
+
+    <button class="menu-btn" onclick="ir('ventas.html')">
+      <span>💰</span> Ventas & Mesas
+    </button>
+
+    <button class="menu-btn" onclick="ir('reportes.html')">
+      <span>📊</span> Reportes
+    </button>
+
+    <button class="menu-btn" id="btnProductos" onclick="ir('productos.html')">
+      <span>📦</span> Productos
+    </button>
+
+    <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
+      <span>👤</span> Usuarios
+    </button>
+
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="content">
+
+    <div class="header">
+      <h1 id="bienvenida"></h1>
+      <button class="logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Ventas del día</h3>
+        <p id="ventasHoy">$0</p>
+        <small>Ingresos diarios</small>
+      </div>
+
+      <div class="card">
+        <h3>Total vendido</h3>
+        <p id="totalVendido">$0</p>
+        <small>Histórico</small>
+      </div>
+
+      <div class="card">
+        <h3>Mesas ocupadas</h3>
+        <p id="mesasOcupadas">0</p>
+        <small>En uso ahora</small>
+      </div>
+
+      <div class="card">
+        <h3>Stock bajo</h3>
+        <p id="stockBajo">0</p>
+        <small>Productos críticos</small>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const usuario = sessionStorage.getItem("usuario");
+  const rol = sessionStorage.getItem("rol");
+
+  if (!usuario || !rol) {
+    window.location.href = "index.html";
+  }
+
+  document.getElementById("bienvenida").textContent =
+    `Bienvenido, ${usuario} (${rol})`;
+
+  if (rol !== "admin") {
+    document.getElementById("btnUsuarios").style.display = "none";
+    document.getElementById("btnProductos").style.display = "none";
+  }
+
+  function ir(pagina) {
+    window.location.href = pagina;
+  }
+
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = "index.html";
+  }
+
+  fetch("/billar-app/backend/dashboard/resumen.php")
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        ventasHoy.textContent = `$${data.ventas_hoy}`;
+        totalVendido.textContent = `$${data.total_vendido}`;
+        mesasOcupadas.textContent = data.mesas_ocupadas;
+        stockBajo.textContent = data.stock_bajo;
+      }
+    });
+</script>
+
+</body>
+</html>
