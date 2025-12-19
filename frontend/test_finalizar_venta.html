@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Finalizar Venta</title>
+</head>
+<body>
+
+<h2>Finalizar Venta</h2>
+
+<button onclick="finalizar()">Finalizar venta</button>
+
+<pre id="resultado"></pre>
+
+<script>
+function finalizar() {
+  fetch("/billar-app/backend/ventas/finalizar_venta.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id_sesion: 1,
+      metodo_pago: "efectivo"
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById("resultado").textContent =
+      JSON.stringify(data, null, 2);
+    console.log(data);
+  });
+}
+</script>
+
+</body>
+</html>
