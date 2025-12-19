@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+<button onclick="cargar()">Ver productos</button>
+<pre id="out"></pre>
+
+<script>
+function cargar() {
+  fetch("/billar-app/backend/reportes/productos.php")
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById("out").textContent =
+        JSON.stringify(d, null, 2);
+    });
+}
+</script>
+</body>
+</html>
