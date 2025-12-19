@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TEST agregar producto</title>
+</head>
+<body>
+
+<button id="btn">Agregar producto</button>
+
+<pre id="out"></pre>
+
+<script>
+document.getElementById("btn").onclick = () => {
+  fetch("/billar-app/backend/ventas/agregar_producto.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id_sesion: 1,
+      id_producto: 2,
+      cantidad: 1
+    })
+  })
+  .then(r => r.text())
+  .then(t => {
+    document.getElementById("out").textContent = t;
+    console.log(t);
+  });
+};
+</script>
+
+</body>
+</html>

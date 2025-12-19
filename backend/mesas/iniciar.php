@@ -32,5 +32,6 @@ $pdo->prepare("
 
 jsonResponse([
     "success" => true,
-    "message" => "Mesa iniciada correctamente"
+    "message" => "Mesa iniciada correctamente",
+    "id_sesion" => $idSesion
 ]);
