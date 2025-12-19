@@ -8,10 +8,11 @@ $stmt = $pdo->query("
         m.id_mesa,
         m.nombre_mesa,
         m.estado,
-        t.nombre_tarifa,
-        t.precio_por_hora
+        s.hora_inicio
     FROM mesas m
-    JOIN tarifas t ON m.id_tarifa = t.id_tarifa
+    LEFT JOIN sesiones_mesa s
+      ON m.id_mesa = s.id_mesa
+      AND s.estado = 'activa'
 ");
 
 jsonResponse([

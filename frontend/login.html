@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Billar</title>
+</head>
+<body>
+
+  <h2>Login</h2>
+
+  <input type="text" id="usuario" placeholder="Usuario">
+  <input type="password" id="password" placeholder="Contraseña">
+  <button onclick="login()">Iniciar sesión</button>
+
+  <script>
+    function login() {
+      const usuario = document.getElementById("usuario").value;
+      const password = document.getElementById("password").value;
+
+      fetch("/billar-app/backend/auth/login.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        alert(data.message);
+      });
+    }
+  </script>
+
+</body>
+</html>
