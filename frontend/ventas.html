@@ -197,32 +197,61 @@ function cargarMesas(){
 }
 
 /* ===================== SELECCIONAR MESA ===================== */
-function seleccionarMesa(idMesa){
-  mesaSeleccionada = idMesa;
-  document.getElementById("mesaActual").textContent = `Mesa ${idMesa}`;
-  totalProductos = 0;
+function seleccionarMesa(idMesa) {
 
+  // 🔁 Si se selecciona la misma mesa, no hacer nada
+  if (mesaSeleccionada === idMesa) return;
+
+  // 🛑 Detener cualquier reloj activo
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  // 🔄 Actualizar mesa seleccionada
+  mesaSeleccionada = idMesa;
+
+  totalProductos = 0;
+  idSesion = null;
+
+  document.getElementById("mesaActual").textContent = `Mesa ${idMesa}`;
+
+  // 🧼 Limpiar card derecha inmediatamente
+  document.getElementById("estadoMesa").textContent = "-";
+  document.getElementById("tiempo").textContent = "0";
+  document.getElementById("costoTiempo").textContent = "$0";
+  document.getElementById("totalProductos").textContent = "$0";
+  document.getElementById("totalVenta").textContent = "$0";
+
+  // 📡 Consultar si la mesa tiene sesión activa
   fetch(`/billar-app/backend/sesiones/obtener.php?id_mesa=${idMesa}`)
     .then(r => r.json())
     .then(res => {
-      if (res.data) {
+
+      if (res.success && res.data) {
         idSesion = res.data.id_sesion;
+
         document.getElementById("estadoMesa").textContent = res.data.estado;
 
-        iniciarReloj(res.data.hora_inicio);
+  // 🔄 Cargar valores reales desde backend
         actualizarEstado();
-      } else {
-        idSesion = null;
-        document.getElementById("estadoMesa").textContent = "libre";
-        document.getElementById("tiempo").textContent = "0";
-        document.getElementById("costoTiempo").textContent = "$0";
-        document.getElementById("totalProductos").textContent = "$0";
-        document.getElementById("totalVenta").textContent = "$0";
-      }
+
+        // ⏱ Iniciar reloj solo si la sesión está activa
+        if (res.data.estado === "activa") {
+          iniciarReloj(res.data.hora_inicio);
+        }
+
+        
+      }else {
+    // 🧼 Mesa sin sesión
+    idSesion = null;
+  }
     });
 
+  // 🔄 Refrescar visual de mesas (seleccionada)
   cargarMesas();
 }
+
 
 
 function iniciarMesa(){
@@ -271,41 +300,27 @@ function actualizarEstado() {
 
       const s = res.data;
 
-      // Estado de la mesa
+      // 🪑 Estado
       document.getElementById("estadoMesa").textContent = s.estado;
 
-      // Tiempo en minutos
+      // ⏱ Tiempo (solo mostrar, no incrementar aquí)
       minutosActuales = parseInt(s.minutos) || 0;
       document.getElementById("tiempo").textContent = minutosActuales;
 
-      // Costo por tiempo
+      // 💸 Costo por tiempo
       const costoTiempo = minutosActuales * precioMinuto;
       document.getElementById("costoTiempo").textContent = `$${costoTiempo}`;
 
-      // Total de productos desde backend
+      // 🧾 Total productos (SIEMPRE desde backend)
       totalProductos = parseInt(s.total_productos) || 0;
-      document.getElementById("totalProductos").textContent = `$${totalProductos}`;
+      document.getElementById("totalProductos").textContent =
+        `$${totalProductos}`;
 
-      // Total final (tiempo + productos)
-      document.getElementById("totalVenta").textContent = `$${costoTiempo + totalProductos}`;
-
-      // Iniciar timer real solo si está activa
-      if (timerInterval) clearInterval(timerInterval);
-      if (s.estado === "activa") {
-        timerInterval = setInterval(() => {
-          minutosActuales++;
-          document.getElementById("tiempo").textContent = minutosActuales;
-
-          const costoTiempo = minutosActuales * precioMinuto;
-          document.getElementById("costoTiempo").textContent = `$${costoTiempo}`;
-
-          document.getElementById("totalVenta").textContent = `$${costoTiempo + totalProductos}`;
-        }, 60000);
-      }
+      // 💰 Total final
+      document.getElementById("totalVenta").textContent =
+        `$${costoTiempo + totalProductos}`;
     });
 }
-
-
 
 
 /* ===================== PRODUCTOS ===================== */
@@ -450,12 +465,13 @@ function finalizarMesa(){
   });
 }
 
-
-
 /* ===================== INIT ===================== */
-cargarMesas();
-cargarProductos();
-setInterval(actualizarEstado, 30000);
+document.addEventListener("DOMContentLoaded", () => {
+  cargarMesas();
+  cargarProductos();
+  setInterval(actualizarEstado, 30000);
+});
+
 </script>
 
 
