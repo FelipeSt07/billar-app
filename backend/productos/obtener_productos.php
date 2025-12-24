@@ -7,7 +7,7 @@ $stmt = $pdo->query("
     SELECT id_producto, nombre, precio, stock
     FROM productos
     WHERE activo = 1
-    ORDER BY stock ASC, nombre ASC
+    ORDER BY nombre ASC
 ");
 
 jsonResponse([

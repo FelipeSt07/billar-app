@@ -1,0 +1,309 @@
+/* ======================
+    LAYOUT GENERAL
+====================== */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ======================
+    SIDEBAR
+====================== */
+.sidebar {
+  width: 260px;
+  background: #BF2000;
+  color: #fff;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 35px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  margin: 15px 0 25px;
+}
+
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  background: rgba(0, 0, 0, 0.15);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu-btn span {
+  font-size: 20px;
+}
+
+.menu-btn:hover {
+  background: #000;
+  transform: translateX(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* ======================
+    CONTENIDO
+====================== */
+.content {
+  flex: 1;
+  padding: 30px;
+  background: #f4f4f4;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.header h1 {
+  font-size: 26px;
+  color: #000;
+}
+
+.logout {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.logout:hover {
+  background: #BF2000;
+}
+
+/* ======================
+    TARJETAS KPI
+====================== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: #fff;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-top: 6px solid #BF2000;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+.card h3 {
+  color: #BF2000;
+  margin-bottom: 12px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card p {
+  font-size: 26px;
+  font-weight: bold;
+  color: #000;
+}
+
+.card small {
+  color: #555;
+}
+
+/* ======================
+HEADER CONTENIDO
+====================== */
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.content-header h2 {
+  font-size: 24px;
+  color: #000;
+}
+
+.btn-add {
+  background: var(--rojo);
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-add:hover {
+  background: #9e1a00;
+  transform: translateY(-2px);
+}
+
+/* ======================
+TABLA
+====================== */
+.table-container {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: var(--rojo);
+  color: #fff;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  text-align: left;
+}
+
+tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+  background: #f7f7f7;
+}
+
+/* ======================
+ACCIONES
+====================== */
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.acciones button {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-edit {
+  background: #000;
+  color: #fff;
+}
+
+.btn-delete {
+  background: var(--rojo);
+  color: #fff;
+}
+
+.acciones button:hover {
+  transform: scale(1.05);
+}
+
+/* ===========================
+   MODAL
+=========================== */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 👇 ESTA CLASE ES LA CLAVE */
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 14px;
+  width: 420px;
+  animation: fadeIn 0.4s ease;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #000;
+  text-align: center;
+}
+
+/* ======================
+   BOTONES DEL MODAL
+====================== */
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.modal-actions button {
+  min-width: 120px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Botón cancelar */
+.btn-cancel {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+}
+
+.btn-cancel:hover {
+  background: #cfcfcf;
+  transform: translateY(-1px);
+}
+
+/* Botón guardar */
+.modal-actions .btn-primary {
+  width: auto;
+  box-shadow: 0 6px 15px rgba(191, 32, 0, 0.4);
+}
+
+.modal-actions .btn-primary:hover {
+  transform: translateY(-2px);
+}
+
