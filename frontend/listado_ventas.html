@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Billar Velez | Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/productos.css">
+  <link rel="stylesheet" href="css/listado_ventas.css">
 </head>
 <body>
 
@@ -45,62 +45,72 @@
   <div class="content">
 
     <div class="header">
-      <h1 id="bienvenida">📦 Gestión de Productos</h1>
+      <h1 id="bienvenida">🧾 Listado de ventas</h1>
       <button class="logout" onclick="logout()">Cerrar sesión</button>
     </div>
 
-    <!-- HEADER DE MÓDULO -->
-    <div class="content-header">
-    <button class="btn-add" onclick="abrirModal()">➕ Agregar producto</button>
-    </div>
+    <br class="ventas-card">
+    <h2>🧾 Ventas Directas</h2>
 
-    <!-- LISTA DE PRODUCTOS -->
-    <div class="table-container">
-    <table>
+    <br/>
+
+    <table class="tabla-ventas">
         <thead>
         <tr>
-            <th>Producto</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Acciones</th>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Acción</th>
         </tr>
         </thead>
-        <tbody id="tablaProductos">
-        <!-- Los productos se cargarán aquí dinámicamente -->
+        <tbody id="ventasBody">
+        <!-- JS -->
         </tbody>
     </table>
-    </div>
+    </br>
 
   </div>
 </div>
 
-<!-- MODAL PARA AGREGAR O EDITAR -->
-
-<div class="modal" id="modalProducto">
+<!-- MODAL DETALLE VENTA -->
+<div class="modal" id="modalDetalle">
   <div class="modal-content">
-    <h3 id="tituloModal">Agregar producto</h3>
+    <h3 id="tituloDetalle">Detalle de la venta</h3>
 
-    <input type="hidden" id="id_producto">
+    <table class="detalle-table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cant</th>
+          <th>Precio</th>
+          <th>Sub</th>
+        </tr>
+      </thead>
+      <tbody id="detalleVentaBody">
+        <!-- JS inserta filas aquí -->
+      </tbody>
+    </table>
 
-    <div class="form-group">
-      <input type="text" id="nombre" placeholder="Nombre del producto">
-    </div>
-
-    <div class="form-group">
-      <input type="number" id="precio" placeholder="Precio">
-    </div>
-
-    <div class="form-group">
-      <input type="number" id="stock" placeholder="Stock">
+    <div class="detalle-total" id="detalleTotal">
+      <!-- Total dinámico -->
     </div>
 
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-primary" onclick="guardarProducto()">Guardar</button>
+      <button class="btn-cancel" onclick="cerrarModalDetalle()">
+        Cancelar
+      </button>
+      <button class="btn-primary" onclick="confirmarAnulacion()">
+        Anular venta
+      </button>
     </div>
   </div>
 </div>
 
-<script src="/billar-app/frontend/js/productos.js"></script>
+
+
+
+<script src="/billar-app/frontend/js/listado_ventas.js"></script>
 </body>
 </html>
