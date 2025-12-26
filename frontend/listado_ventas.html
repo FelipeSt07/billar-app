@@ -1,116 +1,135 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Billar Velez | Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/listado_ventas.css">
 </head>
+
 <body>
 
-<div class="dashboard-container">
+  <div class="dashboard-container">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <h2>🎱 Billar Velez</h2>
-    <hr>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>🎱 Billar Velez</h2>
+      <hr>
 
-    <button class="menu-btn" onclick="ir('ventas.html')">
-      <span>💰</span> Ventas & Mesas
-    </button>
+      <button class="menu-btn" onclick="ir('ventas.html')">
+        <span>💰</span> Ventas & Mesas
+      </button>
 
-    <button class="menu-btn active" onclick="ir('ventas_productos.html')">
-      <span>🛒</span> Venta Productos
-    </button>
+      <button class="menu-btn active" onclick="ir('ventas_productos.html')">
+        <span>🛒</span> Venta Productos
+      </button>
 
-    <button class="menu-btn active" onclick="ir('listado_ventas.html')">
-      <span>🧾</span> Listado de ventas
-    </button>
+      <button class="menu-btn active" onclick="ir('listado_ventas.html')">
+        <span>🧾</span> Listado de ventas
+      </button>
 
-    <button class="menu-btn" onclick="ir('reportes.html')">
-      <span>📊</span> Reportes
-    </button>
+      <button class="menu-btn" onclick="ir('reportes.html')">
+        <span>📊</span> Reportes
+      </button>
 
-    <button class="menu-btn" onclick="ir('productos.html')">
-      <span>📦</span> Productos
-    </button>
+      <button class="menu-btn" onclick="ir('productos.html')">
+        <span>📦</span> Productos
+      </button>
 
-    <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
-      <span>👤</span> Usuarios
-    </button>
+      <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
+        <span>👤</span> Usuarios
+      </button>
 
-  </div>
-
-  <!-- CONTENIDO -->
-  <div class="content">
-
-    <div class="header">
-      <h1 id="bienvenida">🧾 Listado de ventas</h1>
-      <button class="logout" onclick="logout()">Cerrar sesión</button>
     </div>
 
-    <br class="ventas-card">
-    <h2>🧾 Ventas Directas</h2>
+    <!-- CONTENIDO -->
+    <div class="content">
 
-    <br/>
+      <div class="header">
+        <h1 id="bienvenida">🧾 Listado de ventas</h1>
+        <button class="logout" onclick="logout()">Cerrar sesión</button>
+      </div>
 
-    <table class="tabla-ventas">
+      <div class="filtros-ventas">
+        <div>
+          <label>Desde</label>
+          <input type="date" id="fechaInicio">
+        </div>
+
+        <div>
+          <label>Hasta</label>
+          <input type="date" id="fechaFin">
+        </div>
+
+        <button class="btn-filtrar" onclick="filtrarVentas()">Filtrar</button>
+        <button class="btn-filtrar limpiar" onclick="limpiarFiltro()">Limpiar</button>
+      </div>
+
+
+      <br class="ventas-card">
+      <h2>🧾 Ventas Directas</h2>
+
+      <br />
+
+      <table class="tabla-ventas">
         <thead>
-        <tr>
+          <tr>
             <th>#</th>
             <th>Fecha</th>
             <th>Usuario</th>
             <th>Total</th>
             <th>Estado</th>
             <th>Acción</th>
-        </tr>
+          </tr>
         </thead>
         <tbody id="ventasBody">
-        <!-- JS -->
+          <!-- JS -->
         </tbody>
-    </table>
-    </br>
+      </table>
+      </br>
 
-  </div>
-</div>
-
-<!-- MODAL DETALLE VENTA -->
-<div class="modal" id="modalDetalle">
-  <div class="modal-content">
-    <h3 id="tituloDetalle">Detalle de la venta</h3>
-
-    <table class="detalle-table">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Cant</th>
-          <th>Precio</th>
-          <th>Sub</th>
-        </tr>
-      </thead>
-      <tbody id="detalleVentaBody">
-        <!-- JS -->
-      </tbody>
-    </table>
-
-    <div class="detalle-total" id="detalleTotal">
-      <!-- Total dinámico -->
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="cerrarModalDetalle()">
-        Cancelar
-      </button>
-      <button class="btn-primary" onclick="confirmarAnulacion()">
-        Anular venta
-      </button>
     </div>
   </div>
-</div>
+
+  <!-- MODAL DETALLE VENTA -->
+  <div class="modal" id="modalDetalle">
+    <div class="modal-content">
+      <h3 id="tituloDetalle">Detalle de la venta</h3>
+
+      <table class="detalle-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cant</th>
+            <th>Precio</th>
+            <th>Sub</th>
+          </tr>
+        </thead>
+        <tbody id="detalleVentaBody">
+          <!-- JS -->
+        </tbody>
+      </table>
+
+      <div class="detalle-total" id="detalleTotal">
+        <!-- Total dinámico -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="cerrarModalDetalle()">
+          Cancelar
+        </button>
+        <button class="btn-primary" onclick="confirmarAnulacion()">
+          Anular venta
+        </button>
+      </div>
+    </div>
+  </div>
 
 
 
 
-<script src="/billar-app/frontend/js/listado_ventas.js"></script>
-</body>
+  <script src="/billar-app/frontend/js/listado_ventas.js"></script>
+  </div>
+
 </html>

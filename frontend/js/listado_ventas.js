@@ -30,8 +30,14 @@ function logout() {
 //CARGA DE VENTAS ---------------------------------------------------------------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", cargarVentas);
 
-function cargarVentas() {
-  fetch("/billar-app/backend/ventas/listar_ventas.php")
+function cargarVentas(inicio = null, fin = null) {
+  let url = "/billar-app/backend/ventas/listar_ventas.php";
+
+  if (inicio && fin) {
+    url += `?inicio=${inicio}&fin=${fin}`;
+  }
+
+  fetch(url)
     .then(res => res.json())
     .then(data => {
       if (!data.success) return;
@@ -41,20 +47,17 @@ function cargarVentas() {
 
       data.data.forEach(v => {
         const tr = document.createElement("tr");
-
         tr.innerHTML = `
           <td>${v.id_venta}</td>
           <td>${v.fecha_venta}</td>
           <td>${v.usuario}</td>
           <td>$${Number(v.total).toFixed(2)}</td>
-          <td class="estado-${v.estado}">
-            ${v.estado}
-          </td>
+          <td class="estado-${v.estado}">${v.estado}</td>
           <td>
             ${
               v.estado === "activa"
-              ? `<button class="btn-anular" onclick="verDetalleVenta(${v.id_venta})">Ver </button>`
-              : `<button class="btn-anular" disabled>Anulada</button>`
+                ? `<button class="btn-anular" onclick="verDetalleVenta(${v.id_venta})">Ver</button>`
+                : `<button class="btn-anular" disabled>Anulada</button>`
             }
           </td>
         `;
@@ -62,6 +65,27 @@ function cargarVentas() {
       });
     });
 }
+
+// FILTRAR VENTAS -----------------------------------------------------------------------------------------------------------------------------------
+
+function filtrarVentas() {
+  const inicio = document.getElementById("fechaInicio").value;
+  const fin = document.getElementById("fechaFin").value;
+
+  if (!inicio || !fin) {
+    alert("Selecciona ambas fechas");
+    return;
+  }
+
+  cargarVentas(inicio, fin);
+}
+
+function limpiarFiltro() {
+  document.getElementById("fechaInicio").value = "";
+  document.getElementById("fechaFin").value = "";
+  cargarVentas();
+}
+
 
 // DETALLE DE VENTA ---------------------------------------------------------------------------------------------------------------------------------
 let ventaSeleccionada = null;

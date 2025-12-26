@@ -1,88 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Billar Velez | Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/ventas_productos.css">
 </head>
+
 <body>
 
-<div class="dashboard-container">
+  <div class="dashboard-container">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <h2>🎱 Billar Velez</h2>
-    <hr>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>🎱 Billar Velez</h2>
+      <hr>
 
-    <button class="menu-btn" onclick="ir('ventas.html')">
-      <span>💰</span> Ventas & Mesas
-    </button>
+      <button class="menu-btn" onclick="ir('ventas.html')">
+        <span>💰</span> Ventas & Mesas
+      </button>
 
-    <button class="menu-btn active" onclick="ir('ventas_productos.html')">
-      <span>🛒</span> Venta Productos
-    </button>
+      <button class="menu-btn active" onclick="ir('ventas_productos.html')">
+        <span>🛒</span> Venta Productos
+      </button>
 
-    <button class="menu-btn active" onclick="ir('listado_ventas.html')">
-      <span>🧾</span> Listado de ventas
-    </button>
+      <button class="menu-btn active" onclick="ir('listado_ventas.html')">
+        <span>🧾</span> Listado de ventas
+      </button>
 
-    <button class="menu-btn" onclick="ir('reportes.html')">
-      <span>📊</span> Reportes
-    </button>
+      <button class="menu-btn" onclick="ir('reportes.html')">
+        <span>📊</span> Reportes
+      </button>
 
-    <button class="menu-btn" onclick="ir('productos.html')">
-      <span>📦</span> Productos
-    </button>
+      <button class="menu-btn" onclick="ir('productos.html')">
+        <span>📦</span> Productos
+      </button>
 
-    <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
-      <span>👤</span> Usuarios
-    </button>
+      <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
+        <span>👤</span> Usuarios
+      </button>
 
-  </div>
-
-  <!-- CONTENIDO -->
-  <div class="content">
-
-    <div class="header">
-      <h1 id="bienvenida">📦 Ventas de productos</h1>
-      <button class="logout" onclick="logout()">Cerrar sesión</button>
     </div>
-    <div class="ventas-layout">
-      <!-- LISTA DE PRODUCTOS -->
-      <div class="productos-panel">
-        <h2>🛒 Productos</h2>
-        <div class="productos-grid" id="listaProductos"></div>
+
+    <!-- CONTENIDO -->
+    <div class="content">
+
+      <div class="header">
+        <h1 id="bienvenida">📦 Ventas de productos</h1>
+        <button class="logout" onclick="logout()">Cerrar sesión</button>
       </div>
 
-      <!-- CARRITO -->
-      <div class="carrito-panel">
-        <h2>🧾 Carrito</h2>
-
-        <table class="tabla-carrito">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cant.</th>
-              <th>Precio</th>
-              <th>Subtotal</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="carritoBody"></tbody>
-        </table>
-
-        <div class="carrito-total">
-          <h3>Total: $<span id="totalVenta">0</span></h3>
-          <button class="btn-primary" onclick="confirmarVenta()">Confirmar venta</button>
+      <div class="ventas-layout">
+        <!-- LISTA DE PRODUCTOS -->
+        <div class="productos-panel">
+          <h2>🛒 Productos</h2>
+          <div class="buscador-productos">
+            <input 
+              type="text" 
+              id="buscadorProductos"
+              placeholder="🔍 Buscar producto..."
+              oninput="filtrarProductos()"
+            >
+          </div>
+          <div class="productos-grid" id="listaProductos"></div>
         </div>
+
+        <!-- CARRITO -->
+        <div class="carrito-panel">
+          <h2>🧾 Carrito</h2>
+
+          <table class="tabla-carrito">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cant.</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="carritoBody"></tbody>
+          </table>
+
+          <div class="carrito-total">
+            <div class="total-info">
+              <span>Total</span>
+              <strong>$<span id="totalVenta">0</span></strong>
+            </div>
+
+            <button class="btn-primary" onclick="confirmarVenta()">
+              Confirmar venta
+            </button>
+          </div>
+
+        </div>
+
       </div>
 
     </div>
-
   </div>
-</div>
 
-<script src="js/ventas_productos.js"></script>
+  <script src="js/ventas_productos.js"></script>
+  </div>
+
 </body>
-</html>

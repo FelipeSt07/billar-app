@@ -275,4 +275,52 @@
   }
 }
 
+/* ======================
+   FILTROS DE VENTAS
+====================== */
+
+.filtros-ventas {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filtros-ventas label {
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.filtros-ventas input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.btn-filtrar {
+  background: #000;
+  color: #fff;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-filtrar:hover {
+  background: #BF2000;
+}
+
+.btn-filtrar.limpiar {
+  background: #aaa;
+}
+
+.btn-filtrar.limpiar:hover {
+  background: #888;
+}
+
+
 

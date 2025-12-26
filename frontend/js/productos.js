@@ -45,6 +45,7 @@ function abrirModal(producto = null) {
     document.getElementById("nombre").value = producto.nombre;
     document.getElementById("precio").value = producto.precio;
     document.getElementById("stock").value = producto.stock;
+    document.getElementById("categoria").value = producto.categoria;
   } else {
     editando = false;
     document.getElementById("tituloModal").textContent = "Agregar producto";
@@ -52,6 +53,8 @@ function abrirModal(producto = null) {
     document.getElementById("nombre").value = "";
     document.getElementById("precio").value = "";
     document.getElementById("stock").value = "";
+    document.getElementById("categoria").value = "";
+
   }
 }
 
@@ -68,9 +71,10 @@ function guardarProducto() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = document.getElementById("precio").value;
   const stock = document.getElementById("stock").value;
+  const categoria = document.getElementById("categoria").value;
 
-  if (!nombre || !precio || !stock) {
-    alert("Complete todos los campos");
+  if (!nombre || !categoria || !precio || !stock) {
+    alert("Todos los campos son obligatorios");
     return;
   }
 
@@ -78,7 +82,13 @@ function guardarProducto() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ id_producto, nombre, precio, stock })
+    body: JSON.stringify({
+      id_producto,
+      nombre,
+      categoria,
+      precio,
+      stock
+    })
   })
   .then(r => r.json())
   .then(data => {
@@ -174,9 +184,3 @@ function renderProductos(productos) {
     tbody.appendChild(tr);
   });
 }
-
-
-
-
-
-

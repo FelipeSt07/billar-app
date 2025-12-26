@@ -1,4 +1,6 @@
 let carrito = [];
+let productosGlobal = [];
+
 
 // VALIDACIÓN DE SESIÓN
 
@@ -46,42 +48,63 @@ function cargarProductos() {
         return;
       }
 
-      const contenedor = document.getElementById("listaProductos");
-      contenedor.innerHTML = "";
-
-      if (resp.data.length === 0) {
-        contenedor.innerHTML = "<p>No hay productos disponibles</p>";
-        return;
-      }
-
-      resp.data.forEach(prod => {
-        const card = document.createElement("div");
-        card.classList.add("producto-card");
-
-        card.innerHTML = `
-          <h4>${prod.nombre}</h4>
-          <small>Stock: ${prod.stock}</small>
-          <p>$${Number(prod.precio).toLocaleString()}</p>
-          <button class="btn-primary"
-            ${prod.stock <= 0 ? "disabled" : ""}
-            onclick="agregarAlCarrito(
-              ${prod.id_producto},
-              '${prod.nombre.replace(/'/g, "\\'")}',
-              ${prod.precio},
-              ${prod.stock}
-            )">
-            Agregar
-          </button>
-        `;
-
-        contenedor.appendChild(card);
-      });
+      productosGlobal = resp.data; // 👈 GUARDAMOS EN MEMORIA
+      renderProductos(productosGlobal);
     })
     .catch(err => {
       console.error("Error cargando productos:", err);
       alert("Error de conexión con el servidor");
     });
 }
+// RENDERIZAR PRODUCTOS --------------------------------------------------------------------------------------------------------------------------------
+
+function renderProductos(productos) {
+  const contenedor = document.getElementById("listaProductos");
+  contenedor.innerHTML = "";
+
+  if (productos.length === 0) {
+    contenedor.innerHTML = "<p>No hay productos</p>";
+    return;
+  }
+
+  productos.forEach(prod => {
+    const card = document.createElement("div");
+    card.classList.add("producto-card");
+
+    card.innerHTML = `
+      <h4>${prod.nombre}</h4>
+      <small>Stock: ${prod.stock}</small>
+      <p>$${Number(prod.precio).toLocaleString()}</p>
+      <button class="btn-primary"
+        ${prod.stock <= 0 ? "disabled" : ""}
+        onclick="agregarAlCarrito(
+          ${prod.id_producto},
+          '${prod.nombre.replace(/'/g, "\\'")}',
+          ${prod.precio},
+          ${prod.stock}
+        )">
+        Agregar
+      </button>
+    `;
+
+    contenedor.appendChild(card);
+  });
+}
+// FILTRAR PRODUCTOS --------------------------------------------------------------------------------------------------------------------------------
+
+function filtrarProductos() {
+  const texto = document
+    .getElementById("buscadorProductos")
+    .value
+    .toLowerCase();
+
+  const filtrados = productosGlobal.filter(p =>
+    p.nombre.toLowerCase().includes(texto)
+  );
+
+  renderProductos(filtrados);
+}
+
 
 // AGREGAR AL CARRITO DE COMPRAS --------------------------------------------------------------------------------------------------------------------------------
 
