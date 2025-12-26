@@ -1,0 +1,326 @@
+/* ======================
+    LAYOUT GENERAL
+====================== */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ======================
+    SIDEBAR
+====================== */
+.sidebar {
+  width: 260px;
+  background: #BF2000;
+  color: #fff;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 35px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  margin: 15px 0 25px;
+}
+
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  background: rgba(0, 0, 0, 0.15);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu-btn span {
+  font-size: 20px;
+}
+
+.menu-btn:hover {
+  background: #000;
+  transform: translateX(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* ======================
+    CONTENIDO
+====================== */
+.content {
+  flex: 1;
+  padding: 30px;
+  background: #f4f4f4;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.header h1 {
+  font-size: 26px;
+  color: #000;
+}
+
+.logout {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.logout:hover {
+  background: #BF2000;
+}
+
+/* ======================
+    LISTADO DE VENTAS
+====================== */
+.ventas-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.tabla-ventas {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-ventas th,
+.tabla-ventas td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.estado-activa {
+  color: green;
+  font-weight: bold;
+}
+
+.estado-anulada {
+  color: red;
+  font-weight: bold;
+}
+
+.btn-anular {
+  background: #BF2000;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-anular:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+
+/* ===========================
+   MODAL DETALLE VENTA
+=========================== */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal visible */
+.modal.active {
+  display: flex;
+}
+
+/* Contenedor principal */
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 14px;
+  width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: fadeIn 0.35s ease;
+}
+
+/* Título */
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  text-align: center;
+  color: #000;
+}
+
+/* ======================
+   TABLA DETALLE
+====================== */
+
+.detalle-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.detalle-table th {
+  background: #f4f4f4;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px;
+  text-align: center;
+}
+
+.detalle-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ======================
+   TOTAL
+====================== */
+
+.detalle-total {
+  margin-top: 18px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+
+/* ======================
+   BOTONES
+====================== */
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 25px;
+}
+
+.modal-actions button {
+  min-width: 140px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Botón cancelar */
+.btn-cancel {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+}
+
+.btn-cancel:hover {
+  background: #cfcfcf;
+  transform: translateY(-1px);
+}
+
+/* Botón principal */
+.modal-actions .btn-primary {
+  background: #BF2000;
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 15px rgba(191, 32, 0, 0.4);
+}
+
+.modal-actions .btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+/* ======================
+   ANIMACIÓN
+====================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ======================
+   FILTROS DE VENTAS
+====================== */
+
+.filtros-ventas {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filtros-ventas label {
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.filtros-ventas input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.btn-filtrar {
+  background: #000;
+  color: #fff;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-filtrar:hover {
+  background: #BF2000;
+}
+
+.btn-filtrar.limpiar {
+  background: #aaa;
+}
+
+.btn-filtrar.limpiar:hover {
+  background: #888;
+}
+
+
+

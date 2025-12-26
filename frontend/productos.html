@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Billar Velez | Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/productos.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>🎱 Billar Velez</h2>
+    <hr>
+
+    <button class="menu-btn" onclick="ir('ventas.html')">
+      <span>💰</span> Ventas & Mesas
+    </button>
+
+    <button class="menu-btn active" onclick="ir('ventas_productos.html')">
+      <span>🛒</span> Venta Productos
+    </button>
+
+    <button class="menu-btn active" onclick="ir('listado_ventas.html')">
+      <span>🧾</span> Listado de ventas
+    </button>
+
+    <button class="menu-btn" onclick="ir('reportes.html')">
+      <span>📊</span> Reportes
+    </button>
+
+    <button class="menu-btn" onclick="ir('productos.html')">
+      <span>📦</span> Productos
+    </button>
+
+    <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
+      <span>👤</span> Usuarios
+    </button>
+
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="content">
+
+    <div class="header">
+      <h1 id="bienvenida">📦 Gestión de Productos</h1>
+      <button class="logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <!-- HEADER DE MÓDULO -->
+    <div class="content-header">
+    <button class="btn-add" onclick="abrirModal()">➕ Agregar producto</button>
+    </div>
+
+    <!-- LISTA DE PRODUCTOS -->
+    <div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody id="tablaProductos">
+        <!-- Los productos se cargarán aquí dinámicamente -->
+        </tbody>
+    </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL PARA AGREGAR O EDITAR -->
+
+<div class="modal" id="modalProducto">
+  <div class="modal-content">
+    <h3 id="tituloModal">Agregar producto</h3>
+
+    <input type="hidden" id="id_producto">
+
+    <div class="form-group">
+      <input type="text" id="nombre" placeholder="Nombre del producto">
+    </div>
+
+    <div class="form-group">
+      <input type="number" id="precio" placeholder="Precio">
+    </div>
+
+    <div class="form-group">
+      <input type="number" id="stock" placeholder="Stock">
+    </div>
+
+    <div class="form-group">
+      <select id="categoria">
+        <option value="">Seleccione una categoría</option>
+        <option value="Bebidas">Bebidas</option>
+        <option value="Snacks">Snacks</option>
+        <option value="Licores">Licores</option>
+        <option value="Otros">Otros</option>
+      </select>
+    </div>
+
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-primary" onclick="guardarProducto()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script src="/billar-app/frontend/js/productos.js"></script>
+</body>
+</html>
