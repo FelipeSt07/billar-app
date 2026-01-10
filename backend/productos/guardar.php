@@ -7,93 +7,62 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 $id = $data['id_producto'] ?? null;
 $nombre = trim($data['nombre'] ?? '');
-$precio = $data['precio'] ?? null;
-$stock = $data['stock'] ?? null;
+$precio = $data['precio'] ?? 0;
 $categoria = $data['categoria'] ?? null;
+$activo = $data['activo'] ?? 1;
 
-if (!$nombre || $precio === null || $stock === null || !$categoria) {
-    jsonResponse(["success" => false, "message" => "Datos incompletos"], 400);
+if (!$nombre || !$categoria) {
+    jsonResponse([
+        "success" => false,
+        "message" => "Nombre y categoría son obligatorios"
+    ], 400);
 }
-
-$pdo->beginTransaction();
 
 try {
 
     if ($id) {
-        // 1️⃣ Obtener stock actual
+        // 🟡 EDITAR PRODUCTO (MÓDULO PRODUCTOS)
         $stmt = $pdo->prepare("
-            SELECT stock 
-            FROM productos 
+            UPDATE productos
+            SET nombre = ?, precio = ?, categoria = ?, activo = ?
             WHERE id_producto = ?
         ");
-        $stmt->execute([$id]);
-        $producto = $stmt->fetch();
+        $stmt->execute([
+            $nombre,
+            $precio,
+            $categoria,
+            $activo,
+            $id
+        ]);
 
-        if (!$producto) {
-            throw new Exception("Producto no existe");
-        }
-
-        $stockAnterior = (int)$producto['stock'];
-        $stockNuevo = (int)$stock;
-        $diferencia = $stockNuevo - $stockAnterior;
-
-        // 2️⃣ Actualizar producto
-        $stmt = $pdo->prepare("
-            UPDATE productos 
-            SET nombre = ?, precio = ?, stock = ?, categoria = ?
-            WHERE id_producto = ?
-        ");
-        $stmt->execute([$nombre, $precio, $stockNuevo, $categoria, $id]);
-
-        // 3️⃣ Registrar movimiento si cambió el stock
-        if ($diferencia !== 0) {
-            $tipo = $diferencia > 0 ? 'entrada' : 'salida';
-            $cantidad = abs($diferencia);
-
-            $stmt = $pdo->prepare("
-                INSERT INTO movimientos_inventario
-                (id_producto, tipo, cantidad, motivo)
-                VALUES (?, ?, ?, ?)
-            ");
-            $stmt->execute([
-                $id,
-                $tipo,
-                $cantidad,
-                'Ajuste manual de inventario'
-            ]);
-        }
-
-        $pdo->commit();
-        jsonResponse(["success" => true, "message" => "Producto actualizado"]);
+        jsonResponse([
+            "success" => true,
+            "message" => "Producto actualizado correctamente"
+        ]);
 
     } else {
-        // 1️⃣ Insertar producto
+        // 🟢 CREAR PRODUCTO (DESDE COMPRAS O PRODUCTOS)
         $stmt = $pdo->prepare("
-            INSERT INTO productos (nombre, precio, stock, categoria, activo)
-            VALUES (?, ?, ?, ?, 1)
+            INSERT INTO productos 
+            (nombre, precio, categoria, stock, activo, costo_promedio, valor_inventario)
+            VALUES (?, ?, ?, 0, 1, 0, 0)
         ");
-        $stmt->execute([$nombre, $precio, $stock, $categoria]);
+        $stmt->execute([
+            $nombre,
+            $precio,
+            $categoria
+        ]);
 
-        $idProducto = $pdo->lastInsertId();
-
-        // 2️⃣ Registrar stock inicial
-        if ($stock > 0) {
-            $stmt = $pdo->prepare("
-                INSERT INTO movimientos_inventario
-                (id_producto, tipo, cantidad, motivo)
-                VALUES (?, 'entrada', ?, 'Stock inicial')
-            ");
-            $stmt->execute([$idProducto, $stock]);
-        }
-
-        $pdo->commit();
-        jsonResponse(["success" => true, "message" => "Producto agregado"]);
+        jsonResponse([
+            "success" => true,
+            "id_producto" => $pdo->lastInsertId(),
+            "message" => "Producto creado correctamente"
+        ]);
     }
 
 } catch (Exception $e) {
-    $pdo->rollBack();
     jsonResponse([
         "success" => false,
-        "message" => $e->getMessage()
+        "message" => "Error al guardar el producto"
     ], 500);
 }

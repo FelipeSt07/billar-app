@@ -27,7 +27,6 @@ function logout() {
   window.location.href = "index.html";
 }
 
-
 // MODAL PRODUCTOS  ---------------------------------------------------------------------------------------------------------------------------------
 
 const modal = document.getElementById("modalProducto");
@@ -44,7 +43,6 @@ function abrirModal(producto = null) {
     document.getElementById("id_producto").value = producto.id_producto;
     document.getElementById("nombre").value = producto.nombre;
     document.getElementById("precio").value = producto.precio;
-    document.getElementById("stock").value = producto.stock;
     document.getElementById("categoria").value = producto.categoria;
   } else {
     editando = false;
@@ -52,7 +50,6 @@ function abrirModal(producto = null) {
     document.getElementById("id_producto").value = "";
     document.getElementById("nombre").value = "";
     document.getElementById("precio").value = "";
-    document.getElementById("stock").value = "";
     document.getElementById("categoria").value = "";
 
   }
@@ -70,10 +67,9 @@ function guardarProducto() {
   const id_producto = document.getElementById("id_producto").value;
   const nombre = document.getElementById("nombre").value.trim();
   const precio = document.getElementById("precio").value;
-  const stock = document.getElementById("stock").value;
   const categoria = document.getElementById("categoria").value;
 
-  if (!nombre || !categoria || !precio || !stock) {
+  if (!nombre || !categoria || !precio ) {
     alert("Todos los campos son obligatorios");
     return;
   }
@@ -86,8 +82,7 @@ function guardarProducto() {
       id_producto,
       nombre,
       categoria,
-      precio,
-      stock
+      precio
     })
   })
   .then(r => r.json())

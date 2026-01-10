@@ -15,9 +15,6 @@ try {
 
   // 1️⃣ Calcular total
   $total = 0;
-  foreach ($productos as $p) {
-    $total += $p["precio"] * $p["cantidad"];
-  }
 
   // 2️⃣ Insertar venta
   $stmt = $pdo->prepare("
@@ -30,14 +27,19 @@ try {
   // 3️⃣ Detalles + stock + movimientos
   foreach ($productos as $p) {
 
+  $idProducto = $p["id_producto"] ?? null;
+  if (!$idProducto) {
+    throw new Exception("ID de producto inválido");
+  }
+
   // 1️⃣ Obtener precio y stock reales
     $stmt = $pdo->prepare("
-      SELECT nombre, precio, stock
+      SELECT nombre, precio, stock, costo_promedio
       FROM productos
       WHERE id_producto = ?
       FOR UPDATE
     ");
-    $stmt->execute([$p["id"]]);
+    $stmt->execute([$idProducto]);
     $producto = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$producto) {
@@ -45,8 +47,25 @@ try {
     }
 
     $cantidad = (int) $p["cantidad"];
+    if ($cantidad <= 0) {
+      throw new Exception(
+        "Cantidad inválida para {$producto['nombre']}"
+      );
+    }
     $precio = (float) $producto["precio"];
     $subtotal = $precio * $cantidad;
+    $costo_promedio = (float) $producto["costo_promedio"];
+
+    $subtotal_costo = $cantidad * $costo_promedio;
+
+    if ($precio <= $costo_promedio) {
+      throw new Exception(
+        "El precio de venta de {$producto['nombre']} es menor al costo"
+      );
+    }
+
+
+    $total += $subtotal;
 
     // 2️⃣ Validar stock
     if ($producto["stock"] < $cantidad) {
@@ -58,24 +77,34 @@ try {
     // Guardar detalle venta
     $stmt = $pdo->prepare("
       INSERT INTO detalle_venta
-      (id_venta, id_producto, cantidad, precio_unitario, subtotal)
-      VALUES (?, ?, ?, ?, ?)
+      (id_venta, id_producto, cantidad, precio_unitario, subtotal, costo_unitario, subtotal_costo)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->execute([
       $idVenta,
-      $p["id"],
+      $idProducto,
       $cantidad,
       $precio,
-      $subtotal
+      $subtotal,
+      $costo_promedio,
+      $subtotal_costo
     ]);
+
+    $nuevoStock = $producto["stock"] - $cantidad;
+    $nuevoValorInventario = $nuevoStock * $costo_promedio;
+
 
     // 4️⃣ Actualizar stock
     $stmt = $pdo->prepare("
       UPDATE productos
-      SET stock = stock - ?
+      SET stock = ?, valor_inventario = ?
       WHERE id_producto = ?
     ");
-    $stmt->execute([$cantidad, $p["id"]]);
+    $stmt->execute([
+      $nuevoStock,
+      $nuevoValorInventario,
+      $idProducto
+    ]);
 
     // 5️⃣ Movimiento inventario
     $stmt = $pdo->prepare("
@@ -83,8 +112,16 @@ try {
       (id_producto, tipo, cantidad, motivo)
       VALUES (?, 'salida', ?, 'Venta directa')
     ");
-    $stmt->execute([$p["id"], $cantidad]);
+    $stmt->execute([$idProducto, $cantidad]);
   }
+
+  // 6️⃣ Actualizar total real de la venta
+  $stmt = $pdo->prepare("
+    UPDATE ventas
+    SET total = ?
+    WHERE id_venta = ?
+  ");
+  $stmt->execute([$total, $idVenta]);
 
   $pdo->commit();
   jsonResponse(["success" => true]);

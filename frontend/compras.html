@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Billar Velez | Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/compras.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <h2>🎱 Billar Velez</h2>
+            <hr>
+
+            <button class="menu-btn" onclick="ir('ventas.html')">
+                <span>💰</span> Ventas & Mesas
+            </button>
+
+            <button class="menu-btn active" onclick="ir('ventas_productos.html')">
+                <span>🛒</span> Venta Productos
+            </button>
+
+            <button class="menu-btn active" onclick="ir('listado_ventas.html')">
+                <span>🧾</span> Listado de ventas
+            </button>
+
+            <button class="menu-btn" onclick="ir('reportes.html')">
+                <span>📊</span> Reportes
+            </button>
+
+            <button class="menu-btn" onclick="ir('compras.html')">
+                <span>📦</span> Compras
+            </button>
+
+            <button class="menu-btn" onclick="ir('productos.html')">
+                <span>📦</span> Productos
+            </button>
+
+            <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
+                <span>👤</span> Usuarios
+            </button>
+
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="content">
+
+            <div class="header">
+                <h1 id="bienvenida">🧾 Compras</h1>
+                <button class="logout" onclick="logout()">Cerrar sesión</button>
+            </div>
+
+            <div class="compras-container">
+
+                <!-- DATOS GENERALES -->
+                <div class="card">
+                    <h3>📄 Datos de la compra</h3>
+
+                    <div class="compra-header">
+                        <div class="form-group">
+                            <label>Proveedor</label>
+                            <input type="text" id="proveedor" placeholder="Nombre del proveedor">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" id="fecha_compra">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AGREGAR PRODUCTO -->
+                <div class="card">
+                    <h3>➕ Agregar producto</h3>
+
+                    <div class="content-header">
+                        <button class="btn-add" onclick="abrirModalProducto()">➕ Crear nuevo producto</button>
+                    </div>
+
+                    <div class="compra-producto">
+                        <select id="productoSelect">
+                            <option value="">Seleccione producto</option>
+                        </select>
+
+                        <input type="number" id="cantidadCompra" placeholder="Cantidad" min="1">
+                        <input type="number" id="costoUnitario" placeholder="Costo unitario" min="0">
+
+                        <button class="btn-primary" onclick="agregarProductoCompra()">
+                            Agregar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DETALLE -->
+                <div class="card">
+                    <h3>🧾 Detalle de la compra</h3>
+
+                    <table class="tabla-compra">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Costo Unit.</th>
+                                <th>Subtotal</th>
+                                <th>Accion</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalleCompra"></tbody>
+                    </table>
+
+                    <div class="compra-footer">
+                        <button class="btn-primary" onclick="guardarCompra()">
+                            💾 Guardar compra
+                        </button>
+
+                        <div class="total-box">
+                            <span class="total-label">Total compra</span>
+                            <div class="total-value">
+                                <span class="currency">$</span>
+                                <span id="totalCompra">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL PRODUCTO -->
+
+    <div class="modal" id="modalProducto">
+        <div class="modal-content">
+            <h3 id="tituloModal">Agregar producto</h3>
+
+            <input type="hidden" id="id_producto">
+
+            <div class="form-group">
+                <input type="text" id="nombre" placeholder="Nombre del producto">
+            </div>
+
+            <div class="form-group">
+                <input type="number" id="precio" placeholder="Precio">
+            </div>
+
+            <div class="form-group">
+                <select id="categoria">
+                    <option value="">Seleccione una categoría</option>
+                    <option value="Bebidas">Bebidas</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Licores">Licores</option>
+                    <option value="Otros">Otros</option>
+                </select>
+            </div>
+
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn-primary" onclick="guardarProducto()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/billar-app/frontend/js/compras.js"></script>
+    </div>
+
+</html>
