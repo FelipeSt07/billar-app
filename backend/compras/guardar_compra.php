@@ -71,6 +71,8 @@ try {
             $nuevoCostoPromedio = 0;
         }
 
+        $nuevoValorInventario = $nuevoStock * $nuevoCostoPromedio;
+
         // 2.1 Detalle compra
         $stmt = $pdo->prepare("
             INSERT INTO detalle_compra
@@ -88,12 +90,13 @@ try {
         // 2.2 Actualizar stock
         $stmt = $pdo->prepare("
             UPDATE productos
-            SET stock = ?, costo_promedio = ?
+            SET stock = ?, costo_promedio = ?, valor_inventario = ?
             WHERE id_producto = ?
         ");
         $stmt->execute([
             $nuevoStock,
             $nuevoCostoPromedio,
+            $nuevoValorInventario,
             $idProducto
         ]);
 

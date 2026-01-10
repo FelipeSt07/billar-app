@@ -243,14 +243,14 @@ function guardarProducto() {
     }
 
     cerrarModal();
+    cargarProductos();
 
-    cargarProductos().then(() => {
-      if (data.id_producto) {
-        setTimeout(() => {
-          document.getElementById("productoSelect").value = data.id_producto;
-        }, 300);
+    setTimeout(() => {
+      const select = document.getElementById("productoSelect");
+      if (select && data.id_producto) {
+        select.value = data.id_producto;
       }
-    });
+    }, 300);
 
   })
   .catch(err => {
