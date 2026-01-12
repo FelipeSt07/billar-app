@@ -13,11 +13,13 @@ $sql = "
     v.total,
     v.estado,
     u.nombre AS usuario,
-    COALESCE(SUM(d.subtotal_costo), 0) AS costo_total,
-    (v.total - COALESCE(SUM(d.subtotal_costo), 0)) AS utilidad
+    CASE
+      WHEN v.estado = 'anulada' THEN 0
+      ELSE SUM(d.subtotal - d.subtotal_costo)
+    END AS utilidad
   FROM ventas v
   JOIN usuarios u ON u.id_usuario = v.id_usuario
-  LEFT JOIN detalle_venta d ON d.id_venta = v.id_venta
+  JOIN detalle_venta d ON d.id_venta = v.id_venta
   WHERE 1
 ";
 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Billar Velez | Reporte Mensual</title>
+  <link rel="stylesheet" href="css/reportes.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>🎱 Billar Velez</h2>
+    <hr>
+
+    <button class="menu-btn" onclick="ir('ventas.html')">
+      <span>💰</span> Ventas & Mesas
+    </button>
+
+    <button class="menu-btn active" onclick="ir('ventas_productos.html')">
+      <span>🛒</span> Venta Productos
+    </button>
+
+    <button class="menu-btn active" onclick="ir('listado_ventas.html')">
+      <span>🧾</span> Listado de ventas
+    </button>
+
+    <button class="menu-btn" onclick="ir('reportes.html')">
+      <span>📊</span> Reportes
+    </button>
+
+    <button class="menu-btn" onclick="ir('compras.html')">
+      <span>📦</span> Compras
+    </button>
+
+      <button class="menu-btn" onclick="ir('listado_compras.html')">
+        <span>📦</span> Lista de compras
+      </button>
+
+    <button class="menu-btn" onclick="ir('productos.html')">
+      <span>📦</span> Productos
+    </button>
+
+    <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
+      <span>👤</span> Usuarios
+    </button>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="content">
+
+    <div class="header">
+      <h1>📊 Reporte mensual</h1>
+      <button class="logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <div class="filtros-reporte">
+
+      <div class="filtro-item">
+        <label for="mesSeleccionado">Mes del reporte</label>
+        <input type="month" id="mesSeleccionado">
+      </div>
+
+      <button class="btn-filtrar" onclick="cargarReporte()">
+        Consultar
+      </button>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+      <div class="card">
+        <h3>Ingresos</h3>
+        <p id="cardIngresos">$0</p>
+      </div>
+
+      <div class="card">
+        <h3>Gastos</h3>
+        <p id="cardGastos">$0</p>
+      </div>
+
+      <div class="card">
+        <h3>Utilidad</h3>
+        <p id="cardUtilidad">$0</p>
+      </div>
+    </div>
+
+    <!-- TABLA DIARIA -->
+    <div class="tabla-reporte">
+      <table>
+        <thead>
+          <tr>
+            <th>Día</th>
+            <th>Ingresos</th>
+            <th>Utilidad</th>
+          </tr>
+        </thead>
+        <tbody id="tablaReporteBody">
+          <!-- JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+<script src="/billar-app/frontend/js/reportes.js"></script>
+
+</body>
+</html>

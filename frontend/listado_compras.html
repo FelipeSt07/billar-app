@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Billar Velez | Lista de Compras</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/listado_ventas.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>🎱 Billar Velez</h2>
+    <hr>
+
+    <button class="menu-btn" onclick="ir('ventas.html')">
+      <span>💰</span> Ventas & Mesas
+    </button>
+
+    <button class="menu-btn active" onclick="ir('ventas_productos.html')">
+      <span>🛒</span> Venta Productos
+    </button>
+
+    <button class="menu-btn active" onclick="ir('listado_ventas.html')">
+      <span>🧾</span> Listado de ventas
+    </button>
+
+    <button class="menu-btn" onclick="ir('reportes.html')">
+      <span>📊</span> Reportes
+    </button>
+
+    <button class="menu-btn" onclick="ir('compras.html')">
+      <span>📦</span> Compras
+    </button>
+
+      <button class="menu-btn" onclick="ir('listado_compras.html')">
+        <span>📦</span> Lista de compras
+      </button>
+
+    <button class="menu-btn" onclick="ir('productos.html')">
+      <span>📦</span> Productos
+    </button>
+
+    <button class="menu-btn" id="btnUsuarios" onclick="ir('usuarios.html')">
+      <span>👤</span> Usuarios
+    </button>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="content">
+
+    <div class="header">
+      <h1>📦 Listado de compras</h1>
+      <button class="logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filtros-ventas">
+      <div>
+        <label>Desde</label>
+        <input type="date" id="fechaInicio">
+      </div>
+
+      <div>
+        <label>Hasta</label>
+        <input type="date" id="fechaFin">
+      </div>
+
+      <button class="btn-filtrar" onclick="filtrarCompras()">Filtrar</button>
+      <button class="btn-filtrar limpiar" onclick="limpiarFiltro()">Limpiar</button>
+    </div>
+
+    <br>
+
+    <h2>📋 Compras registradas</h2>
+
+    <table class="tabla-ventas">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Fecha</th>
+          <th>Proveedor</th>
+          <th>Total</th>
+          <th>Usuario</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="comprasBody">
+        <!-- JS -->
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- MODAL DETALLE COMPRA -->
+<div class="modal" id="modalDetalleCompra">
+  <div class="modal-content">
+    <h3>📦 Detalle de la compra</h3>
+
+    <table class="detalle-table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Costo</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody id="detalleCompraBody">
+        <!-- JS -->
+      </tbody>
+    </table>
+
+    <div class="detalle-total" id="totalCompra">
+      <!-- Total -->
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="cerrarModalDetalle()">
+        Cerrar
+      </button>
+
+      <button class="btn-danger" onclick="confirmarAnulacionCompra()">
+        Anular compra
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="/billar-app/frontend/js/listado_compras.js"></script>
+
+</body>
+</html>
