@@ -12,9 +12,14 @@ $sql = "
     v.fecha_venta,
     v.total,
     v.estado,
-    u.nombre AS usuario
+    u.nombre AS usuario,
+    CASE
+      WHEN v.estado = 'anulada' THEN 0
+      ELSE SUM(d.subtotal - d.subtotal_costo)
+    END AS utilidad
   FROM ventas v
   JOIN usuarios u ON u.id_usuario = v.id_usuario
+  JOIN detalle_venta d ON d.id_venta = v.id_venta
   WHERE 1
 ";
 
@@ -26,6 +31,7 @@ if ($inicio && $fin) {
   $params[] = $fin;
 }
 
+$sql .= " GROUP BY v.id_venta";
 $sql .= " ORDER BY v.fecha_venta DESC";
 
 $stmt = $pdo->prepare($sql);

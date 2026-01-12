@@ -211,7 +211,10 @@ function confirmarVenta() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      productos: carrito
+      productos: carrito.map(p => ({
+        id_producto: p.id,
+        cantidad: p.cantidad
+      }))
     })
   })
   .then(r => r.json())
@@ -225,7 +228,10 @@ function confirmarVenta() {
       alert(data.message);
     }
   })
-  .catch(() => alert("Error al registrar la venta"));
+  .catch(err => {
+    console.error(err);
+    alert("Error al registrar la venta (ver consola)");
+  });
 }
 
 

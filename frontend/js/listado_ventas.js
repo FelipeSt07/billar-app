@@ -52,6 +52,9 @@ function cargarVentas(inicio = null, fin = null) {
           <td>${v.fecha_venta}</td>
           <td>${v.usuario}</td>
           <td>$${Number(v.total).toFixed(2)}</td>
+          <td class="utilidad ${Number(v.utilidad) >= 0 ? 'positiva' : 'negativa'}">
+            $${Number(v.utilidad).toFixed(2)}
+          </td>
           <td class="estado-${v.estado}">${v.estado}</td>
           <td>
             ${
