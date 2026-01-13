@@ -51,9 +51,9 @@ function cargarVentas(inicio = null, fin = null) {
           <td>${v.id_venta}</td>
           <td>${v.fecha_venta}</td>
           <td>${v.usuario}</td>
-          <td>$${Number(v.total).toFixed(2)}</td>
+          <td>${formatearDinero(v.total)}</td>
           <td class="utilidad ${Number(v.utilidad) >= 0 ? 'positiva' : 'negativa'}">
-            $${Number(v.utilidad).toFixed(2)}
+            ${formatearDinero(v.utilidad)}
           </td>
           <td class="estado-${v.estado}">${v.estado}</td>
           <td>
@@ -112,8 +112,8 @@ function verDetalleVenta(idVenta) {
         tr.innerHTML = `
           <td>${p.nombre}</td>
           <td>${p.cantidad}</td>
-          <td>$${Number(p.precio_unitario).toFixed(2)}</td>
-          <td>$${Number(p.subtotal).toFixed(2)}</td>
+          <td>${formatearDinero(p.precio_unitario)}</td>
+          <td>${formatearDinero(p.subtotal)}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -176,3 +176,14 @@ function anularVenta(idVenta) {
     }
   });
 }
+
+function formatearDinero(valor) {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping: true
+  }).format(Number(valor));
+}
+

@@ -165,7 +165,7 @@ function renderProductos(productos) {
 
     tr.innerHTML = `
       <td>${p.nombre}</td>
-      <td>$${p.precio}</td>
+      <td>${formatearDinero(p.precio)}</td>
       <td>${p.stock}</td>
       <td class="acciones">
         <button class="btn-edit">✏️</button>
@@ -178,4 +178,13 @@ function renderProductos(productos) {
 
     tbody.appendChild(tr);
   });
+}
+
+function formatearDinero(valor) {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(Number(valor));
 }

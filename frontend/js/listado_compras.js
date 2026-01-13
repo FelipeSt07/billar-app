@@ -49,9 +49,9 @@ function cargarCompras(inicio = null, fin = null) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${c.id_compra}</td>
-          <td>${c.fecha}</td>
+          <td>${formatearFecha(c.fecha)}</td>
           <td>${c.proveedor}</td>
-          <td>$${Number(c.total).toFixed(2)}</td>
+          <td>${formatearDinero(c.total)}</td>
           <td>${c.usuario}</td>
           <td class="estado-${c.estado}">${c.estado}</td>
           <td>
@@ -62,6 +62,7 @@ function cargarCompras(inicio = null, fin = null) {
             }
           </td>
         `;
+
         tbody.appendChild(tr);
       });
     });
@@ -119,15 +120,16 @@ function verDetalleCompra(idCompra) {
         tr.innerHTML = `
           <td>${p.nombre}</td>
           <td>${p.cantidad}</td>
-          <td>$${Number(p.costo_unitario).toFixed(2)}</td>
-          <td>$${Number(p.subtotal).toFixed(2)}</td>
+          <td>${formatearDinero(p.costo_unitario)}</td>
+          <td>${formatearDinero(p.subtotal)}</td>
         `;
         tbody.appendChild(tr);
       });
 
       // ⚠️ Total calculado solo para visualización
       document.getElementById("totalCompra").innerText =
-        `Total: $${total.toFixed(2)}`;
+      `Total: ${formatearDinero(total)}`;
+
 
       abrirModalDetalle();
     })
@@ -182,4 +184,23 @@ function anularCompra(idCompra) {
         alert(data.message);
       }
     });
+}
+
+function formatearDinero(valor) {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(Number(valor));
+}
+
+function formatearFecha(fecha) {
+  if (!fecha) return "";
+  const f = new Date(fecha);
+  return f.toLocaleDateString("es-CO", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
 }

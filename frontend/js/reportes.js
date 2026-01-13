@@ -60,17 +60,18 @@ function cargarReporte() {
 
 function pintarCards(resumen) {
   document.getElementById("cardIngresos").innerText =
-    `$${Number(resumen.ingresos).toFixed(2)}`;
+    formatearDinero(resumen.ingresos);
 
   document.getElementById("cardGastos").innerText =
-    `$${Number(resumen.gastos).toFixed(2)}`;
+    formatearDinero(resumen.gastos);
 
   const utilidad = Number(resumen.utilidad);
   const utilidadEl = document.getElementById("cardUtilidad");
 
-  utilidadEl.innerText = `$${utilidad.toFixed(2)}`;
+  utilidadEl.innerText = formatearDinero(utilidad);
   utilidadEl.className = utilidad >= 0 ? "positiva" : "negativa";
 }
+
 
 // TABLA DIARIA --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -80,9 +81,7 @@ function pintarTablaDiaria(diario) {
 
   if (!diario || diario.length === 0) {
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td colspan="3">No hay movimientos en este mes</td>
-    `;
+    tr.innerHTML = `<td colspan="3">No hay movimientos en este mes</td>`;
     tbody.appendChild(tr);
     return;
   }
@@ -92,15 +91,16 @@ function pintarTablaDiaria(diario) {
 
     tr.innerHTML = `
       <td>${formatearFecha(d.dia)}</td>
-      <td>$${Number(d.ingresos).toFixed(2)}</td>
+      <td>${formatearDinero(d.ingresos)}</td>
       <td class="${Number(d.utilidad) >= 0 ? 'positiva' : 'negativa'}">
-        $${Number(d.utilidad).toFixed(2)}
+        ${formatearDinero(d.utilidad)}
       </td>
     `;
 
     tbody.appendChild(tr);
   });
 }
+
 
 
 // UTILIDADES ---------------------------------------------------------------------------------------------------------------------------------------
@@ -111,3 +111,14 @@ function formatearFecha(fecha) {
   const [anio, mes, dia] = fecha.split("-");
   return `${dia}/${mes}/${anio}`;
 }
+
+// Formatea un número como moneda colombiana
+
+function formatearDinero(valor) {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0
+  }).format(valor);
+}
+
