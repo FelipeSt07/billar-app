@@ -74,7 +74,7 @@ function renderProductos(productos) {
     card.innerHTML = `
       <h4>${prod.nombre}</h4>
       <small>Stock: ${prod.stock}</small>
-      <p>$${Number(prod.precio).toLocaleString()}</p>
+      <p>${formatearDinero(prod.precio)}</p>
       <button class="btn-primary"
         ${prod.stock <= 0 ? "disabled" : ""}
         onclick="agregarAlCarrito(
@@ -90,6 +90,7 @@ function renderProductos(productos) {
     contenedor.appendChild(card);
   });
 }
+
 // FILTRAR PRODUCTOS --------------------------------------------------------------------------------------------------------------------------------
 
 function filtrarProductos() {
@@ -154,8 +155,8 @@ function renderCarrito() {
           value="${item.cantidad}"
           onchange="cambiarCantidad(${item.id}, this.value)">
       </td>
-      <td>$${item.precio.toLocaleString()}</td>
-      <td>$${subtotal.toLocaleString()}</td>
+      <td>${formatearDinero(item.precio)}</td>
+      <td>${formatearDinero(subtotal)}</td>
       <td>
         <button onclick="eliminarDelCarrito(${item.id})">❌</button>
       </td>
@@ -164,7 +165,7 @@ function renderCarrito() {
     tbody.appendChild(tr);
   });
 
-  totalSpan.textContent = total.toLocaleString();
+  totalSpan.textContent = formatearDinero(total);
 }
 
 //CAMBIAR CANTIDAD EN EL CARRITO --------------------------------------------------------------------------------------------------------------------------------
@@ -233,6 +234,20 @@ function confirmarVenta() {
     alert("Error al registrar la venta (ver consola)");
   });
 }
+
+// FORMATEAR DINERO --------------------------------------------------------------------------------------------------------------------------------
+
+function formatearDinero(valor) {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping: true
+  }).format(Number(valor));
+}
+
+
 
 
 
