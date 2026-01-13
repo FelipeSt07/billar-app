@@ -26,19 +26,38 @@ try {
   ========================== */
   $sqlResumen = "
     SELECT
-      IFNULL(SUM(v.total), 0) AS ingresos,
-      IFNULL(SUM(d.subtotal_costo), 0) AS costo_ventas,
-      IFNULL(SUM(d.subtotal - d.subtotal_costo), 0) AS utilidad
-    FROM ventas v
-    JOIN detalle_venta d ON d.id_venta = v.id_venta
-    WHERE v.estado = 'activa'
-      AND YEAR(v.fecha_venta) = ?
-      AND MONTH(v.fecha_venta) = ?
-      ";
+    (
+      SELECT IFNULL(SUM(total), 0)
+      FROM ventas
+      WHERE estado = 'activa'
+        AND YEAR(fecha_venta) = ?
+        AND MONTH(fecha_venta) = ?
+    ) AS ingresos,
+
+    (
+      SELECT IFNULL(SUM(subtotal_costo), 0)
+      FROM detalle_venta d
+      JOIN ventas v ON v.id_venta = d.id_venta
+      WHERE v.estado = 'activa'
+        AND YEAR(v.fecha_venta) = ?
+        AND MONTH(v.fecha_venta) = ?
+    ) AS costo_ventas,
+
+    (
+      SELECT IFNULL(SUM(subtotal - subtotal_costo), 0)
+      FROM detalle_venta d
+      JOIN ventas v ON v.id_venta = d.id_venta
+      WHERE v.estado = 'activa'
+        AND YEAR(v.fecha_venta) = ?
+        AND MONTH(v.fecha_venta) = ?
+    ) AS utilidad
+    ";
 
   $stmt = $pdo->prepare($sqlResumen);
   $stmt->execute([
-    $anio, $mes,
+    $anio, $mes,   // ingresos
+    $anio, $mes,   // costo_ventas
+    $anio, $mes    // utilidad
   ]);
   $resumen = $stmt->fetch();
 
@@ -48,16 +67,16 @@ try {
   $sqlDiario = "
     SELECT
       DATE(v.fecha_venta) AS dia,
-      SUM(v.total) AS ingresos,
+      SUM(DISTINCT v.total) AS ingresos,
       SUM(d.subtotal - d.subtotal_costo) AS utilidad
     FROM ventas v
     JOIN detalle_venta d ON d.id_venta = v.id_venta
     WHERE v.estado = 'activa'
       AND YEAR(v.fecha_venta) = ?
       AND MONTH(v.fecha_venta) = ?
-    GROUP BY DATE(v.fecha_venta)
+    GROUP BY v.id_venta, DATE(v.fecha_venta)
     ORDER BY dia ASC
-  ";
+    ";
 
   $stmt = $pdo->prepare($sqlDiario);
   $stmt->execute([$anio, $mes]);

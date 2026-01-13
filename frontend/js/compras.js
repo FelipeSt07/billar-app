@@ -89,12 +89,6 @@ function agregarProductoCompra() {
 
 
 function renderDetalle() {
-  const formato = valor =>
-    valor.toLocaleString("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0
-    });
 
   const tbody = document.getElementById("detalleCompra");
   const totalSpan = document.getElementById("totalCompra");
@@ -106,8 +100,8 @@ function renderDetalle() {
       <tr>
         <td>${d.nombre}</td>
         <td>${d.cantidad}</td>
-        <td>${formato(d.costo_unitario)}</td>
-        <td>${formato(d.subtotal)}</td>
+        <td>${formatearDinero(d.costo_unitario)}</td>
+        <td>${formatearDinero(d.subtotal)}</td>
         <td>
           <button onclick="eliminarDetalle(${i})">❌</button>
         </td>
@@ -116,7 +110,7 @@ function renderDetalle() {
   });
 
   const total = calcularTotal();
-  totalSpan.textContent = formato(total);
+  totalSpan.textContent = formatearDinero(total);
 }
 
 
@@ -266,3 +260,15 @@ window.addEventListener("click", function (e) {
     cerrarModal();
   }
 });
+
+
+function formatearDinero(valor) {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping: true
+  }).format(Number(valor));
+}
+
